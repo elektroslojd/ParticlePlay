@@ -64,7 +64,7 @@ class Attractor extends Node {
   }
   
   Attractor getClosestNode(List<Attractor> nodes) {
-    float minDist = 100000f;
+    float minDist = Float.MAX_VALUE;
     Attractor closest = null;
     for(int i = 0; i < nodes.size(); i++) {
       if(this != nodes.get(i)) {
