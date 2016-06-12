@@ -30,7 +30,6 @@ List<Attractor> myAttractors;
 Attractor activeAttractor = null;
 
 PShape activeShape;
-float shapeAngle = 0;
 
 int[] particleRoute;
 int routeStep;
@@ -43,6 +42,9 @@ int lineMode = 1;
 float attractorSizeMultiplier = 1.0;
 int circleLayers = 1;
 float circleInc = 1.09;
+int shapeStartAngle = 0;
+boolean doRotateShape = false;
+int shapeRotateMode = 0;
 
 int b1, b2, b3, b4;
 
@@ -147,10 +149,12 @@ void draw() {
   if(showCircles) {
     for(int n=circleLayers-1; n>=0; n--) {
       for (Attractor node : nodes) {
-        float angle = atan2(mouseY-node.y, mouseX-node.x) + radians(shapeAngle);
         pushMatrix();
         translate(node.x, node.y);
-        rotate(angle);
+        if(doRotateShape) {
+          float angle = getRotateShapeAngle(node.x, node.y);
+          rotate(angle);
+        }
         node.draw(n);
         popMatrix();
       }
@@ -184,6 +188,20 @@ void draw() {
   
 }
 
+float getRotateShapeAngle(float nodeX, float nodeY) {
+  float angle = 0;
+  if(shapeRotateMode == 1) {
+    angle = radians(shapeStartAngle);
+  }else if(shapeRotateMode == 2) {
+    angle = atan2(mouseY-nodeY, mouseX-nodeX) + radians(shapeStartAngle);
+  }else if(shapeRotateMode == 3) {
+    Attractor closest = getClosestAttractor(nodeX, nodeY);
+    angle = atan2(closest.y-nodeY, closest.x-nodeX) + radians(shapeStartAngle);
+  }else if(shapeRotateMode == 4) {
+    
+  } 
+  return angle; 
+}
 
 void drawLines() {
   noFill();
@@ -523,6 +541,19 @@ void centerAttractor(String axis) {
       activeAttractor.y = height / 2;
     }
   }
+}
+
+Attractor getClosestAttractor(float x, float y) {
+  float minDist = Float.MAX_VALUE;
+  Attractor closest = null;
+  for(Attractor node : myAttractors) {
+    float dist = dist(x, y, node.x, node.y);
+    if(dist < minDist) {
+      minDist = dist;
+      closest = node;
+    }
+  }
+  return closest;
 }
 
 void initGrid() {

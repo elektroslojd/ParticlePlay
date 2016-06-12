@@ -109,6 +109,7 @@ void setupControls() {
    .addItem("3",3)
    .addItem("4",4)
    .activate(0)
+   .hideLabels()
    ;   
     
   cp5.addToggle("doResize")
@@ -189,13 +190,44 @@ void setupControls() {
    .setTriggerEvent(Bang.RELEASE)
    .setLabel("Remove all attractors")
    ;   
+   
+  cp5.addToggle("doRotateShape")
+   .setPosition(xPos, yPos+=50)
+   .setSize(20,20)
+   .setValue(doRotateShape)
+   .setLabel("Rotate shape")
+   ;
+   
+  cp5.addRadioButton("shapeRotateMode")
+   .setPosition(xPos,yPos+=40)
+   .setSize(15,15)
+   .setColorLabel(color(255))
+   .setItemsPerRow(5)
+   .setSpacingColumn(20)
+   .addItem("shapeRotateMode1",1)
+   .addItem("shapeRotateMode2",2)
+   .addItem("shapeRotateMode3",3)
+   .addItem("shapeRotateMode4",4)
+   .hideLabels()
+   ; 
+   
+  cp5.addKnob("shapeStartAngle")
+   .setPosition(xPos, yPos+=20)
+   .setRange(0,359)
+   .setValue(shapeStartAngle)
+   .setRadius(20)
+   .setDragDirection(Knob.HORIZONTAL)
+   .setAngleRange(PI*2)
+   .setStartAngle(0)
+   .setLabel("Shape Start Angle")
+   ; 
       
 }
 
 void controlEvent(ControlEvent theEvent) {
   //println("got a control event from controller with id "+theEvent.getId()+" and controller and name "+theEvent.getName());
   Toggle t;
-  Slider2D s;
+  
   switch(theEvent.getName()) {
     case("damping"):
       DAMPING = theEvent.getController().getValue();
@@ -243,6 +275,9 @@ void controlEvent(ControlEvent theEvent) {
     case("bottomRightBoundary"):
       getBoundary();
       //println("bottomRightBoundary="+s.getArrayValue()[0]+":"+s.getArrayValue()[1]);
+      break;
+    case("shapeRotateMode"):
+      shapeRotateMode = (int)theEvent.getValue();
       break;
   }
 }
