@@ -1,8 +1,59 @@
-<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <!-- Generator: Adobe Illustrator 13.0.0, SVG Export Plug-In . SVG Version: 6.00 Build 14948)  -->
-<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
-<svg version="1.1" id="Ebene_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
-	 width="50px" height="50px" viewBox="0 0 50 50" enable-background="new 0 0 50 50" xml:space="preserve">
-<circle cx="0.329" cy="0.329" r="20.079"/>
-<circle opacity="0.2" cx="4.882" cy="4.882" r="22.288"/>
-</svg>
+
+<svg
+   xmlns:dc="http://purl.org/dc/elements/1.1/"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   version="1.1"
+   id="Ebene_1"
+   x="0px"
+   y="0px"
+   width="150"
+   height="150"
+   viewBox="0 0 150 150"
+   enable-background="new 0 0 50 50"
+   xml:space="preserve"
+   inkscape:version="0.91+devel+osxmenu r12922"
+   sodipodi:docname="shape3.svg"><metadata
+     id="metadata4755"><rdf:RDF><cc:Work
+         rdf:about=""><dc:format>image/svg+xml</dc:format><dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" /><dc:title></dc:title></cc:Work></rdf:RDF></metadata><defs
+     id="defs4753" /><sodipodi:namedview
+     pagecolor="#ffffff"
+     bordercolor="#666666"
+     borderopacity="1"
+     objecttolerance="10"
+     gridtolerance="10"
+     guidetolerance="10"
+     inkscape:pageopacity="0"
+     inkscape:pageshadow="2"
+     inkscape:window-width="1280"
+     inkscape:window-height="751"
+     id="namedview4751"
+     showgrid="false"
+     inkscape:zoom="1.668772"
+     inkscape:cx="-24.912059"
+     inkscape:cy="39.069478"
+     inkscape:window-x="0"
+     inkscape:window-y="23"
+     inkscape:window-maximized="0"
+     inkscape:current-layer="shapes" /><g
+     inkscape:groupmode="layer"
+     id="shapes"
+     inkscape:label="shapes"
+     transform="translate(0,100)"><circle
+       cx="64.537369"
+       cy="-35.462643"
+       r="62.135284"
+       id="shape1"
+       style="stroke-width:0.99999994" /><circle
+       cx="78.626793"
+       cy="-21.373196"
+       r="68.971123"
+       id="shape2"
+       style="opacity:0.2;stroke-width:0.99999994" /></g></svg>
