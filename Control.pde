@@ -191,8 +191,28 @@ void setupControls() {
    .setLabel("Remove all attractors")
    ;   
    
+  cp5.addButton("openShapeFile")
+   .setPosition(xPos, yPos+=60)
+   .setSize(100,20)
+   .setLabel("Open Shape File")
+   ;
+   
+  cp5.addToggle("drawShape")
+   .setPosition(xPos, yPos+=30)
+   .setSize(20,20)
+   .setValue(drawShape)
+   .setLabel("Shape from file")
+   ;
+   
+   cp5.addToggle("drawShapePerLayer")
+   .setPosition(xPos+80, yPos)
+   .setSize(20,20)
+   .setValue(drawShapePerLayer)
+   .setLabel("New each layer")
+   ;
+   
   cp5.addToggle("doRotateShape")
-   .setPosition(xPos, yPos+=50)
+   .setPosition(xPos, yPos+=40)
    .setSize(20,20)
    .setValue(doRotateShape)
    .setLabel("Rotate shape")
@@ -292,6 +312,10 @@ void getBoundary() {
     b3 = (int)s2.getArrayValue()[0];
     b4 = (int)s2.getArrayValue()[1];
   }
+}
+
+void openShapeFile() {
+  selectInput("Select a file", "setShapeFile");  
 }
 
 void setBoundarySliders() {

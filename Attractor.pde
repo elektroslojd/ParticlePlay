@@ -104,9 +104,21 @@ class Attractor extends Node {
     fill(colors[layer]);
     //ellipse(x, y, dia, dia);
     
-    shapeMode(CENTER);
-    shape(activeShape, 0, 0, dia, dia);
-    ellipse(0, 0, dia, dia);
+    
+    if(drawShape) {
+      shapeMode(CENTER);
+      if(drawShapePerLayer) {
+        int shapeSuffix = layer+1;
+        if(shapeSuffix > activeShape.getChildCount()) {
+          shapeSuffix = 1;
+        }
+        shape(activeShape.getChild(shapeName+str(shapeSuffix)), 0, 0, dia, dia);
+      }else {
+        shape(activeShape.getChild(shapeName+str(shapeNameSuffixIndex)), 0, 0, dia, dia);
+      }
+    }else {
+      ellipse(0, 0, dia, dia);
+    }
     
   }
   

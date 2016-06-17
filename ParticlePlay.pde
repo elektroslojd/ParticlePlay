@@ -50,6 +50,9 @@ int b1, b2, b3, b4;
 
 
 String imageName = "particle_play";
+String shapeFileName = "shape1.svg";
+String shapeName = "shape";
+int shapeNameSuffixIndex = 1;
 boolean showHelp = false;
 boolean doAttract = false;
 boolean doRepel = false;
@@ -60,6 +63,8 @@ boolean showCircles = true;
 boolean showLines = false;
 boolean saveOneFrame = false;
 boolean doBoundary = true;
+boolean drawShape = false;
+boolean drawShapePerLayer = false;
 
 
 float DAMPING = 0.02;
@@ -90,7 +95,8 @@ void setup() {
   b3 = width;
   b4 = height;
   
-  activeShape = loadShape("shape1.svg");
+  activeShape = loadShapeFile();
+  println("shapes in file: "+activeShape.getChildCount());
   activeShape.disableStyle();
   
   nodes = new ArrayList<Attractor>();
@@ -667,6 +673,16 @@ void keyPressed() {
   if(keyCode == DOWN) {
     centerAttractor("vert");
   }
+}
+
+void setShapeFile(File file) {
+  shapeFileName = file.getAbsolutePath();
+  activeShape = loadShapeFile();
+  activeShape.disableStyle();
+}
+
+PShape loadShapeFile() {
+  return loadShape(shapeFileName).getChild("shapes");
 }
 
 
