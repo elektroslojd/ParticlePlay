@@ -28,7 +28,7 @@ More to come soon.
 
 ## ToDo
 * Textfield for setting save name, optional timestamp
-* ~~Get shapes from `PShape.getChild()`, set `circleLayers` from nr of childen~~
+* ~~Get shapes from `PShape.getChild()`, set `circleLayers` from nr of childen~~
 * ~~Add controls for choosing shape file~~
 * Controls for setting layer colors
 * Save lines as 3d vertex points
