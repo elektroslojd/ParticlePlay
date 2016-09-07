@@ -30,6 +30,7 @@ List<Attractor> myAttractors;
 Attractor activeAttractor = null;
 
 PShape activeShape;
+PVector mouseOffset;
 
 int[] particleRoute;
 int routeStep;
@@ -484,9 +485,12 @@ void deleteAttractor() {
 
 void moveAttractor() {
   if(activeAttractor != null && mousePressed && mouseButton == LEFT) {
-    activeAttractor.x = mouseX;
-    activeAttractor.y = mouseY;
-    println("mousePressed: mouseX="+mouseX+", mouseY="+mouseY);
+    if(mouseOffset == null) {
+      mouseOffset = new PVector(activeAttractor.x-mouseX, activeAttractor.y-mouseY);  
+    }
+    activeAttractor.x = mouseX + mouseOffset.x;
+    activeAttractor.y = mouseY + mouseOffset.y;
+    println("moveAttractor: mouseX="+mouseX+", mouseY="+mouseY);
   }
 }
 
@@ -620,7 +624,10 @@ void mouseReleased() {
     myAttractor.x = mouseX;
     myAttractor.y = mouseY;
     myAttractors.add(myAttractor);
-    println(myAttractors.size());
+    println("mouseReleased: "+myAttractors.size());
+  }else if(mouseOffset != null) {
+    mouseOffset = null;
+    println("mouseReleased: mouseOffset="+mouseOffset);
   }
 }
 
