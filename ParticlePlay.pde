@@ -24,6 +24,7 @@ Voronoi voronoi;
 PolygonClipper2D clipper;
 
 ControlP5 cp5;
+PGraphics pgHelp;
 
 List<Attractor> nodes;
 List<Attractor> myAttractors;
@@ -110,6 +111,7 @@ void setup() {
   myAttractor.y = height/2;
   myAttractors.add(myAttractor);
   
+  pgHelp = createGraphics(400, height);
   setupControls();
 }
 
@@ -186,11 +188,21 @@ void draw() {
     saveOneFrame = false;
   }
   
+  
+   
   if(showHelp) {
-    fill(0, 100);
-    noStroke();
-    rect(0, 0, 400, height);
+    //fill(0, 100);
+    //noStroke();
+    //rect(0, 0, 400, height);
+    pgHelp.beginDraw();
+    pgHelp.background(0, 100);
+    pgHelp.noStroke();
+    pgHelp.endDraw();
+    image(pgHelp, 0, 0);
     cp5.draw();
+    cp5.show();
+  }else {
+    cp5.hide();  
   }
   
 }
