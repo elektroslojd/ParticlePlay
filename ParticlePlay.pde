@@ -26,6 +26,9 @@ PolygonClipper2D clipper;
 ControlP5 cp5;
 PGraphics pgHelp;
 
+PrintWriter printWriter;
+String pcdHeader = "# .PCD v0.7 - Point Cloud Data file format\nVERSION 0.7\nFIELDS x y z\nSIZE 4 4 4\nTYPE F F F\nCOUNT 1 1 1";
+
 List<Attractor> nodes;
 List<Attractor> myAttractors;
 Attractor activeAttractor = null;
@@ -704,6 +707,23 @@ PShape loadShapeFile() {
   return loadShape(shapeFileName).getChild("shapes");
 }
 
+
+void savePointCloudFile() {
+  printWriter = createWriter(imageName+"_"+timestamp()+".pcd");
+  printWriter.println(pcdHeader);
+  printWriter.println("WIDTH "+str(nodes.size()));
+  printWriter.println("HEIGHT 1");
+  printWriter.println("VIEWPOINT 0 0 0 1 0 0 0");
+  printWriter.println("POINTS "+str(nodes.size()));
+  printWriter.println("DATA ascii");
+  if(nodes != null) {
+    for(Attractor node : nodes) {
+      printWriter.println(str(node.x)+" "+str(node.y)+" "+str(node.getSize()));  
+    }
+  }
+  printWriter.flush();
+  printWriter.close();
+}
 
 String timestamp() {
   return String.format("%1$ty%1$tm%1$td_%1$tH%1$tM%1$tS", Calendar.getInstance());
