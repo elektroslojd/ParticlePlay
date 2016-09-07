@@ -79,9 +79,9 @@ color[] colors = {
 };
 
 
-void setup() {  
+void setup() {
   size(700, 700); 
-  pixelDensity(displayDensity());
+  //pixelDensity(displayDensity());
   surface.setResizable(true);
   frameRate(30);
   
