@@ -650,49 +650,35 @@ void keyPressed() {
   //println("keyPressed: key = "+key+", keyCode = "+keyCode);
   if (key=='h' || key=='H') {
     showHelp = !showHelp;
-  }
-  if (key=='r' || key=='R') {
+  }else if (key=='r' || key=='R') {
     initGrid();
-  }
-  if (key=='s' || key=='S') {
+  }else if (key=='s' || key=='S') {
     saveOneFrame = true;
-  }
-  if (key=='a' || key=='A') {
+  }else if (key=='a' || key=='A') {
     doAttract = !doAttract;
-  }
-  if (key=='z' || key=='Z') {
+  }else if (key=='z' || key=='Z') {
     doRepel = !doRepel;
-  }
-  if (key=='q' || key=='q') {
+  }else if (key=='q' || key=='q') {
     showAttractors = !showAttractors;
-  }
-  if (key=='x' || key=='X') {
+  }else if (key=='x' || key=='X') {
     deleteAttractor();
-  }
-  if (key=='c' || key=='C') {
+  }else if (key=='c' || key=='C') {
     Toggle t = (Toggle)cp5.getController("showCircles");
     t.toggle();
-  }
-  if (key=='l' || key=='L') {
+  }else if (key=='l' || key=='L') {
     Toggle t = (Toggle)cp5.getController("showLines");
     t.toggle();
-  }
-  if (key=='v' || key=='V') {
+  }else if (key=='v' || key=='V') {
     doVoronoi = !doVoronoi;
-  }
-  if (key=='0') {
+  }else if (key=='0') {
     setAttractorMode(0);
-  }
-  if (key=='1') {
+  }else if (key=='1') {
     setAttractorMode(1);
-  }
-  if (key=='2') {
+  }else if (key=='2') {
     setAttractorMode(2);
-  }
-  if(keyCode == LEFT) {
+  }else if(keyCode == LEFT) {
     centerAttractor("hor");
-  }
-  if(keyCode == DOWN) {
+  }else if(keyCode == DOWN) {
     centerAttractor("vert");
   }
 }
