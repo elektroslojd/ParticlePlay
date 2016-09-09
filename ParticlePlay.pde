@@ -85,6 +85,15 @@ color[] colors = {
   color(102,113,13),
   color(255,165,11)
 };
+*/
+
+color[] colors = {
+  color(255,255,255),
+  color(200,200,200),
+  color(150,150,150),
+  color(100,100,100),
+  color(50,50,50)
+};
 
 
 void setup() {
@@ -131,10 +140,10 @@ void draw() {
     beginRecord(PDF, getFileSaveName()+".pdf");
   }
   
-  //fill(255);
+  //fill(255,10);
   //noStroke();
   //rect(0, 0, width, height);
-  background(255);
+  background(0);
   
   List<Attractor> sizeList = new ArrayList<Attractor>();
   if(doResize) {
