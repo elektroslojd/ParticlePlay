@@ -70,10 +70,13 @@ boolean saveOneFrame = false;
 boolean doBoundary = true;
 boolean drawShape = false;
 boolean drawShapePerLayer = false;
+boolean doDampingEnd = true;
+
+float DAMPING = 0.01;
+float DAMPING_END = 0.35;
 
 
-float DAMPING = 0.02;
-
+/*
 color[] colors = {
   color(75,5,1),
   color(169,59,0),
@@ -655,6 +658,14 @@ void keyPressed() {
   }else if (key=='s' || key=='S') {
     saveOneFrame = true;
   }else if (key=='a' || key=='A') {
+    if(doAttract && doDampingEnd) {
+      DAMPING = DAMPING_END;
+      setNodeDamping();
+    }
+    if(!doAttract) {
+      DAMPING = cp5.getController("damping").getValue();
+      setNodeDamping();
+    }
     doAttract = !doAttract;
   }else if (key=='z' || key=='Z') {
     doRepel = !doRepel;

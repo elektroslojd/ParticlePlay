@@ -78,11 +78,26 @@ void setupControls() {
     ;  
   
   cp5.addSlider("damping")
-    .setPosition(xPos, yPos+=40)
+    .setPosition(xPos, yPos+=30)
     .setSize(100,20)
     .setRange(0.01, 1)
     .setValue(DAMPING)
     ;
+    
+  cp5.addSlider("DAMPING_END")
+    .setPosition(xPos, yPos+=25)
+    .setSize(100,20)
+    .setRange(0.01, 1)
+    .setValue(DAMPING_END)
+    .setLabel("Damping End")
+    ;
+    
+  cp5.addToggle("doDampingEnd")
+   .setPosition(xPos, yPos+=25)
+   .setSize(20,20)
+   .setValue(doDampingEnd)
+   .setLabel("Use Damping End?")
+   ;  
   
   cp5.addToggle("showCircles")
    .setPosition(xPos, yPos+=40)
@@ -252,6 +267,12 @@ void controlEvent(ControlEvent theEvent) {
     case("damping"):
       DAMPING = theEvent.getController().getValue();
       setNodeDamping();
+      break;
+    case("doDampingEnd"):
+      if(!doAttract && doDampingEnd) {
+        DAMPING = DAMPING_END;
+        setNodeDamping();
+      }
       break;
     case("xCount"):
       xCount = (int)theEvent.getController().getValue();
