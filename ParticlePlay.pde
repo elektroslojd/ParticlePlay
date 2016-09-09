@@ -201,7 +201,7 @@ void draw() {
   }
 
   if (saveOneFrame) {
-    saveFrame(imageName+"_"+timestamp()+".png");
+    saveFrame(getFileSaveName()+".png");
     endRecord();
     saveOneFrame = false;
   }
@@ -718,7 +718,7 @@ PShape loadShapeFile() {
 
 
 void savePointCloudFile() {
-  printWriter = createWriter(imageName+"_"+timestamp()+".pcd");
+  printWriter = createWriter(getFileSaveName()+".pcd");
   printWriter.println(pcdHeader);
   printWriter.println("WIDTH "+str(nodes.size()));
   printWriter.println("HEIGHT 1");
