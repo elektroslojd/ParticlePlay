@@ -256,6 +256,28 @@ void setupControls() {
    .setStartAngle(0)
    .setLabel("Shape Start Angle")
    ; 
+   
+  cp5.addTextfield("fileSavePrefix")
+   .setPosition(xPos, yPos+=80)
+   .setSize(100,20)
+   .setValue(imageName)
+   .setAutoClear(false)
+   .setLabel("Save Name Prefix")
+   ;
+   
+  cp5.addBang("updateTimestamp")
+   .setPosition(xPos, yPos+=40)
+   .setSize(20, 20)
+   .setTriggerEvent(Bang.RELEASE)
+   .setLabel("Update Timestamp")
+   ;
+   
+  cp5.addTextlabel("fileSaveName")
+    .setPosition(xPos-3, yPos+=50)
+    .setSize(220, 20)
+    .setText(getFileSaveName())
+    .setColorValue(0xffffff00)
+    ; 
       
 }
 
@@ -319,6 +341,13 @@ void controlEvent(ControlEvent theEvent) {
       break;
     case("shapeRotateMode"):
       shapeRotateMode = (int)theEvent.getValue();
+      break;
+    case("fileSavePrefix"):
+      updateFileSaveNameLabel();
+      break;
+    case("updateTimestamp"):
+      savedTimestamp = timestamp();
+      updateFileSaveNameLabel();
       break;
   }
 }

@@ -55,6 +55,7 @@ int b1, b2, b3, b4;
 
 
 String imageName = "particle_play";
+String savedTimestamp;
 String shapeFileName = "shape1.svg";
 String shapeName = "shape";
 int shapeNameSuffixIndex = 1;
@@ -117,15 +118,17 @@ void setup() {
   myAttractor.y = height/2;
   myAttractors.add(myAttractor);
   
+  savedTimestamp = timestamp();
   pgHelp = createGraphics(400, height);
   setupControls();
+  
 }
 
 void draw() {
   setBoundarySliders();
   
   if(saveOneFrame) {
-    beginRecord(PDF, imageName+"_"+timestamp()+".pdf");
+    beginRecord(PDF, getFileSaveName()+".pdf");
   }
   
   //fill(255);
@@ -721,6 +724,16 @@ void savePointCloudFile() {
   printWriter.flush();
   printWriter.close();
 }
+
+
+
+void updateFileSaveNameLabel() {
+  cp5.get(Textlabel.class, "fileSaveName").setText(getFileSaveName());
+}
+String getFileSaveName() {
+  return cp5.get(Textfield.class,"fileSavePrefix").getText()+"_"+savedTimestamp;
+}
+
 
 String timestamp() {
   return String.format("%1$ty%1$tm%1$td_%1$tH%1$tM%1$tS", Calendar.getInstance());
