@@ -122,6 +122,15 @@ class Attractor extends Node {
     
   }
   
+  void setMode(int value) {
+    if(value == PASSIVE) {
+      mode = PASSIVE;
+    }else if(value == ATTRACT) {
+      mode = ATTRACT;
+    }else if(value == REPEL) {
+      mode = REPEL;   
+    }
+  }
   
   float getSize() {
     return doResize ? diameter : minNodeSize;  

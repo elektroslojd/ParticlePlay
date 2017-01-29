@@ -20,7 +20,7 @@ void setupControls() {
     +"A = Toggles simulation on/off \n"
     +"R = Reset simulation \n"
     +"S = Save frame \n"
-    +"Z = Do repel, toggle on/off \n"
+    +"B = Do repel, toggle on/off \n"
     +"Q = show/hide attractors \n"
     +"X = Delete active attractor \n"
     +"C = draw circles, toggle on/off \n"
@@ -157,7 +157,7 @@ void setupControls() {
    ; 
    
   cp5.addBang("setNodesAsAttractors")
-   .setPosition(xPos=240, yPos=155)
+   .setPosition(xPos=240, yPos=15)
    .setSize(20, 20)
    .setTriggerEvent(Bang.RELEASE)
    .setLabel("Use nodes as attractors")
@@ -205,9 +205,15 @@ void setupControls() {
    .setTriggerEvent(Bang.RELEASE)
    .setLabel("Remove all attractors")
    ;   
+  
+  cp5.addButton("openAttractorFile")
+   .setPosition(xPos, yPos+=40)
+   .setSize(100,20)
+   .setLabel("Open Attractor File")
+   ; 
    
   cp5.addButton("openShapeFile")
-   .setPosition(xPos, yPos+=60)
+   .setPosition(xPos, yPos+=40)
    .setSize(100,20)
    .setLabel("Open Shape File")
    ;
@@ -265,12 +271,12 @@ void setupControls() {
    .setLabel("Save Name Prefix")
    ;
    
-  cp5.addBang("updateTimestamp")
+  cp5.addToggle("useTimestamp")
    .setPosition(xPos, yPos+=40)
-   .setSize(20, 20)
-   .setTriggerEvent(Bang.RELEASE)
-   .setLabel("Update Timestamp")
-   ;
+   .setSize(20,20)
+   .setValue(useTimestamp)
+   .setLabel("Use timestamp")
+   ; 
    
   cp5.addTextlabel("fileSaveName")
     .setPosition(xPos-3, yPos+=50)
@@ -278,6 +284,14 @@ void setupControls() {
     .setText(getFileSaveName())
     .setColorValue(0xffffff00)
     ; 
+    
+  cp5.addNumberbox("zMaterialScale")
+    .setPosition(xPos, yPos+=25)
+    .setSize(100,20)
+    .setRange(1, 100)
+    .setDirection(Controller.HORIZONTAL)
+    .setValue(zMaterialScale)
+    ;  
       
 }
 
@@ -329,7 +343,7 @@ void controlEvent(ControlEvent theEvent) {
       break;  
     case("lineMode"):
       lineMode = (int)theEvent.getValue();
-      println("lineMode="+lineMode);
+      //println("lineMode="+lineMode);
       break;
     case("topLeftBoundary"):
       getBoundary();
@@ -345,8 +359,7 @@ void controlEvent(ControlEvent theEvent) {
     case("fileSavePrefix"):
       updateFileSaveNameLabel();
       break;
-    case("updateTimestamp"):
-      savedTimestamp = timestamp();
+    case("useTimestamp"):
       updateFileSaveNameLabel();
       break;
   }
@@ -366,6 +379,10 @@ void getBoundary() {
 
 void openShapeFile() {
   selectInput("Select a file", "setShapeFile");  
+}
+void openAttractorFile() {
+  println("openAttractorFile");
+  selectInput("Select a file", "setAttractorFile");  
 }
 
 void setBoundarySliders() {

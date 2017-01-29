@@ -19,6 +19,7 @@ import processing.svg.*;
 import controlP5.*;
 import toxi.geom.*;
 import toxi.geom.mesh2d.*;
+import toxi.math.conversion.*;
 
 Voronoi voronoi;
 PolygonClipper2D clipper;
@@ -28,11 +29,14 @@ PGraphics pgHelp;
 
 PrintWriter printWriter;
 String pcdHeader = "# .PCD v0.7 - Point Cloud Data file format\nVERSION 0.7\nFIELDS x y z\nSIZE 4 4 4\nTYPE F F F\nCOUNT 1 1 1";
+Table csv;
 
 List<Attractor> nodes;
 List<Attractor> myAttractors;
-Attractor activeAttractor = null;
+List<Attractor> activeAttractors;
+Attractor activeAttractor;
 
+PShape attractorShape;
 PShape activeShape;
 PVector mouseOffset;
 
@@ -53,6 +57,7 @@ int shapeRotateMode = 0;
 
 int b1, b2, b3, b4;
 
+int zMaterialScale = 12;
 
 String imageName = "particle_play";
 String savedTimestamp;
@@ -72,6 +77,7 @@ boolean doBoundary = true;
 boolean drawShape = false;
 boolean drawShapePerLayer = false;
 boolean doDampingEnd = true;
+boolean useTimestamp = true;
 
 float DAMPING = 0.01;
 float DAMPING_END = 0.35;
@@ -113,7 +119,7 @@ void setup() {
   b3 = width;
   b4 = height;
   
-  activeShape = loadShapeFile();
+  activeShape = loadShapeFile(shapeFileName);
   println("shapes in file: "+activeShape.getChildCount());
   activeShape.disableStyle();
   
@@ -127,6 +133,8 @@ void setup() {
   myAttractor.y = height/2;
   myAttractors.add(myAttractor);
   
+  activeAttractors = new ArrayList<Attractor>();
+  
   savedTimestamp = timestamp();
   pgHelp = createGraphics(400, height);
   setupControls();
@@ -137,7 +145,7 @@ void draw() {
   setBoundarySliders();
   
   if(saveOneFrame) {
-    beginRecord(PDF, getFileSaveName()+".pdf");
+    beginRecord(SVG, getFileSaveName()+".svg");
   }
   
   //fill(255,10);
@@ -245,17 +253,28 @@ void drawLines() {
   strokeWeight(1);
   
   if(nodes.size() == xCount*yCount) {
+    
+    if(saveOneFrame) {
+      setupCSV();
+    }
+    
     if(lineMode == 1) {
       int i = 0;
       for (int y = 0; y < yCount; y++) {
         stroke(255, (255/yCount)*(y+1), 50);
         beginShape();
+        //addCSVRow(nodes.get(i).x, nodes.get(i).y, 6, 1);
+        float z = nodes.get(i).getSize() / maxNodeSize * getZMaterialScale(zMaterialScale);
+        addCSVRow(nodes.get(i).x, nodes.get(i).y, -z, 1);
         curveVertex(nodes.get(i).x, nodes.get(i).y);
         for (int x = 0; x < xCount; x++) {
           curveVertex(nodes.get(i).x, nodes.get(i).y);
+          z = nodes.get(i).getSize() / maxNodeSize * getZMaterialScale(zMaterialScale);
+          addCSVRow(nodes.get(i).x, nodes.get(i).y, -z);
           i++;
         }
         curveVertex(nodes.get(i-1).x, nodes.get(i-1).y);
+        //addCSVRow(nodes.get(i-1).x, nodes.get(i-1).y, 6);
         endShape();
       }
     }else if(lineMode == 2) {
@@ -263,10 +282,14 @@ void drawLines() {
       for (int y = 0; y < xCount; y++) {
         stroke(255, (255/xCount)*(y+1), 50);
         beginShape();
+        float z = nodes.get(i).getSize() / maxNodeSize * getZMaterialScale(zMaterialScale);
+        addCSVRow(nodes.get(i).x, nodes.get(i).y, -z, 1);
         curveVertex(nodes.get(y).x, nodes.get(y).y);
         for (int x = 0; x < yCount; x++) {
           i = x * xCount + y;
           curveVertex(nodes.get(i).x, nodes.get(i).y);
+          z = nodes.get(i).getSize() / maxNodeSize * getZMaterialScale(zMaterialScale);
+          addCSVRow(nodes.get(i).x, nodes.get(i).y, -z);
         }
         curveVertex(nodes.get(i).x, nodes.get(i).y);
         endShape();
@@ -285,6 +308,8 @@ void drawLines() {
         i = sub_x * xCount + sub_y;
         if(i < nodes.size()) {
           curveVertex(nodes.get(i).x, nodes.get(i).y);
+          float z = nodes.get(i).getSize() / maxNodeSize * getZMaterialScale(zMaterialScale);
+          addCSVRow(nodes.get(i).x, nodes.get(i).y, -z, 1);
         }
         //println("sub_x="+sub_x+", sub_y="+sub_y);
         while(sub_x >= 0 && sub_y < yCount) {
@@ -294,6 +319,8 @@ void drawLines() {
           //println(i);
           if(i < nodes.size()) {
             curveVertex(nodes.get(i).x, nodes.get(i).y);
+            float z = nodes.get(i).getSize() / maxNodeSize * getZMaterialScale(zMaterialScale);
+            addCSVRow(nodes.get(i).x, nodes.get(i).y, -z);
           }
         }
         if(x < xCount-1) {
@@ -305,6 +332,8 @@ void drawLines() {
         }
         if(i < nodes.size()) {
           curveVertex(nodes.get(i).x, nodes.get(i).y);
+          float z = nodes.get(i).getSize() / maxNodeSize * getZMaterialScale(zMaterialScale);
+          addCSVRow(nodes.get(i).x, nodes.get(i).y, -z);
         }
         endShape();
       }
@@ -314,13 +343,22 @@ void drawLines() {
       int particleRouteLength = nodes.size();
       stroke(255, 0, 50);
       beginShape();
+      Attractor p1 = nodes.get(particleRoute[0]);
+      float z = p1.getSize() / maxNodeSize * getZMaterialScale(zMaterialScale);
+      addCSVRow(p1.x, p1.y, -z, 1);
       curveVertex(nodes.get(particleRoute[0]).x, nodes.get(particleRoute[0]).y);
       for (int i = 0; i < particleRouteLength; ++i) {
-        Attractor p1 = nodes.get(particleRoute[i]);
+        p1 = nodes.get(particleRoute[i]);
         curveVertex(p1.x, p1.y);
+        z = p1.getSize() / maxNodeSize * getZMaterialScale(zMaterialScale);
+        addCSVRow(p1.x, p1.y, -z);
       }
       curveVertex(nodes.get(particleRoute[particleRouteLength-1]).x, nodes.get(particleRoute[particleRouteLength-1]).y);
       endShape();
+    }
+    
+    if(saveOneFrame) {
+      saveCSV();
     }
   }
 }
@@ -471,7 +509,9 @@ void showAttractors() {
     boolean over = overCircle((int)node.x, (int)node.y, (int)node.radius);
     if(over) {
       hasOver = true;
-      activeAttractor = node;
+      if(!activeAttractors.contains(node)) {
+        activeAttractors.add(node);
+      }
       stroke(255,0,0);
     }else {
       if(node.mode == Attractor.ATTRACT) {
@@ -486,8 +526,10 @@ void showAttractors() {
     ellipse(node.x, node.y, node.radius, node.radius);
   }
   if(hasOver) {
+    activeAttractor = activeAttractors.get(activeAttractors.size()-1);
     moveAttractor();
   }else {
+    activeAttractors.clear();
     activeAttractor = null;
   }
 }
@@ -606,7 +648,7 @@ void initGrid() {
   float yInc = yHeight/(yCount-1 > 0 ? yCount-1 : 1);
   float xPad = b1;
   float yPad = b2;
-  for (int y = 0; y < yCount; y++) { //<>//
+  for (int y = 0; y < yCount; y++) { //<>// //<>//
     for (int x = 0; x < xCount; x++) {
       float xPos = x*xInc+xPad;
       float yPos = y*yInc+yPad;
@@ -679,10 +721,14 @@ void keyPressed() {
       setNodeDamping();
     }
     doAttract = !doAttract;
-  }else if (key=='z' || key=='Z') {
+  }else if(key == 'z' || key == 'Z') {
+    Toggle t = (Toggle)cp5.getController("doDampingEnd");
+    t.toggle();
+  }else if (key=='b' || key=='B') {
     doRepel = !doRepel;
   }else if (key=='q' || key=='q') {
     showAttractors = !showAttractors;
+    activeAttractors.clear();
   }else if (key=='x' || key=='X') {
     deleteAttractor();
   }else if (key=='c' || key=='C') {
@@ -691,10 +737,14 @@ void keyPressed() {
   }else if (key=='l' || key=='L') {
     Toggle t = (Toggle)cp5.getController("showLines");
     t.toggle();
-  }else if (key=='v' || key=='V') {
-    doVoronoi = !doVoronoi;
+  }else if (key=='k' || key=='K') {
+    cycleLineMode(1);
   }else if (key=='0') {
     setAttractorMode(0);
+  }else if (key=='v' || key=='V') {
+    doVoronoi = !doVoronoi;
+  }else if (key=='j' || key=='J') {
+    cycleLineMode(-1);
   }else if (key=='1') {
     setAttractorMode(1);
   }else if (key=='2') {
@@ -706,14 +756,94 @@ void keyPressed() {
   }
 }
 
+void cycleLineMode(int inc) {
+  int index = lineMode + inc;
+  int max = cp5.get(RadioButton.class, "lineMode").getArrayValue().length; 
+  if(index > max) {
+    index = 1;  
+  }else if(index < 1) {
+    index = max;  
+  }
+  cp5.get(RadioButton.class, "lineMode").activate(index-1);
+}
+
 void setShapeFile(File file) {
   shapeFileName = file.getAbsolutePath();
-  activeShape = loadShapeFile();
+  activeShape = loadShapeFile(shapeFileName);
   activeShape.disableStyle();
 }
 
-PShape loadShapeFile() {
-  return loadShape(shapeFileName).getChild("shapes");
+void setAttractorFile(File file) {
+  println("setAttractorFile");
+  shapeFileName = file.getAbsolutePath();
+  attractorShape = loadShapeFile(shapeFileName);
+  int count = attractorShape.getChildCount();
+  println("setAttractorFile: attractorShape.getChildCount()="+attractorShape.getChildCount());
+  
+  if(count > 0) { 
+    for(int i=0; i < count; i++) {
+      float[] p = getShapeParams(attractorShape.getChild(i));
+      //println(i+" - "+p[0]+":"+p[1]+", w="+p[2]+", h="+p[3]);
+      Attractor myAttractor = new Attractor(p[0], p[1]);
+      myAttractor.setRadius(p[2]);
+      myAttractor.setMode(int(p[3]));
+      myAttractors.add(myAttractor);
+    }
+  }
+
+}
+
+float[] getShapeParams(PShape shape) {
+  float[] p;
+  try {
+    p = shape.getParams();    
+  }catch(Exception e) {
+    println(e);
+    return null;
+  }
+  
+  float pw = p[2];
+  float ph = p[3];
+  p[0] = (p[0] + pw*0.5);
+  p[1] = (p[1] + ph*0.5);
+  p[3] = 0;
+  color c = shape.getStroke(0);
+  if(c == color(0,255,0)) {
+    p[3] = 1;
+  }else if(c == color(0,0,255)) {
+    p[3] = 2;
+  }
+  return p;
+}
+
+PShape loadShapeFile(String file) {
+  return loadShape(file).getChild("shapes");
+}
+
+void setupCSV() {
+  csv = new Table();
+  csv.addColumn("x");
+  csv.addColumn("y");
+  csv.addColumn("z");
+  csv.addColumn("n");
+}
+void addCSVRow(float x, float y, float z) {
+  addCSVRow(x, y, z, 0);
+}
+void addCSVRow(float x, float y, float z, int newLine) {
+  if(csv != null) {
+    float scale = 1;
+    TableRow row = csv.addRow();
+    row.setFloat("x", x/scale);
+    row.setFloat("y", y/scale);
+    row.setFloat("z", z/scale);
+    row.setInt("n", newLine);
+  }
+}
+void saveCSV() {
+  if(csv != null) {
+    saveTable(csv, getFileSaveName()+".csv");
+  }
 }
 
 
@@ -735,12 +865,22 @@ void savePointCloudFile() {
 }
 
 
+float getZMaterialScale(int px) {
+  return (float)UnitTranslator.millisToPixels((double)px,96);
+}
 
 void updateFileSaveNameLabel() {
-  cp5.get(Textlabel.class, "fileSaveName").setText(getFileSaveName());
+  if(cp5.get(Textlabel.class, "fileSaveName") != null) {
+    cp5.get(Textlabel.class, "fileSaveName").setText(getFileSaveName());
+  }
 }
 String getFileSaveName() {
-  return cp5.get(Textfield.class,"fileSavePrefix").getText()+"_"+savedTimestamp;
+  String fileName = cp5.get(Textfield.class,"fileSavePrefix").getText();
+  if(useTimestamp) {
+    fileName += "_" + timestamp();  
+  }
+  cp5.get(Textlabel.class, "fileSaveName").setText(fileName);
+  return fileName;
 }
 
 
